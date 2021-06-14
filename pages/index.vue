@@ -5,8 +5,11 @@
       <h1 class="title">
         PASAR PARA ACA
       </h1>
+      <ul class="bg-red-900 p-10 rounded-2xl m-5 text-white">
+        <li class="mb-3" v-for="(item, index) in todos" :key="index">  {{ index + 1 }}. {{ item.task }} </li>
+      </ul>
 
-      <button @click="ver">
+      <button @click="ver" >
         ver
       </button>
 
@@ -18,13 +21,20 @@
   export default {
     data() {
       return {
-        todos: ''
+        todos: []
       }
     },
     methods: {
       async ver() {
+         const db = this.$fire.firestore.collection('todos')
         try {
-         
+          const get = await db.get()
+          .then(res => {
+            res.forEach(el => {
+              console.log(el.data())
+              this.todos.push(el.data())
+            });
+          })
         } catch (error) {
           console.log(error)
         }
